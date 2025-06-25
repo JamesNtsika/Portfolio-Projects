@@ -152,3 +152,39 @@ WHERE dea.continent IS NOT NULL
 
 SELECT * 
 FROM Percent_Population_Vaccinated
+
+
+--VISUALISE ON TABLEAU
+
+--1.
+
+SELECT SUM(new_cases) AS total_cases, SUM(CAST(new_deaths AS INT)) AS total_deaths, SUM(CAST(new_deaths AS INT)) / SUM(new_cases) *100 AS Death_Percentage
+FROM CovidDeaths
+--WHERE location = 'South Africa'
+WHERE continent IS NOT NULL
+--GROUP BY date
+ORDER BY 1,2,3
+
+
+--2.
+
+SELECT location, SUM(CAST(new_deaths AS INT)) AS Total_Death_Count
+FROM CovidDeaths
+--WHERE location = 'South Africa'
+WHERE continent IS NULL AND location NOT IN ('World', 'European Union', 'International')
+GROUP BY location
+ORDER BY Total_Death_Count DESC
+
+--3.
+
+SELECT location, population, MAX(total_cases) AS Highest_Infection_Count, MAX((total_cases/population))*100 AS Percentage_Populaion_Infected
+FROM CovidDeaths
+GROUP BY location, population
+ORDER BY Percentage_Populaion_Infected DESC
+
+--4.
+
+SELECT location, population, date, MAX(total_cases) AS Highest_Infection_Count, MAX((total_cases/population))*100 AS Percentage_Populaion_Infected
+FROM  CovidDeaths
+GROUP BY location, population, date
+ORDER BY Percentage_Populaion_Infected DESC
